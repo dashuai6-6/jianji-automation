@@ -2,6 +2,14 @@
 
 短视频出片前的三段式质检与自动返修。装一次，以后哪台电脑 `git clone` + 双击一个 bat 就能用。
 
+> **仓库导航**（三条分支各放各的，互不干扰）
+>
+> | 分支 | 内容 |
+> |---|---|
+> | `main` | 7 月的剪映自动化剪辑技能（生成剪映草稿） |
+> | **`san-chi-chu-pian`** | 本页：三道尺子出片质检 |
+> | `concat-commands` | Concat 0.2.8 的 50 个命令实测表 + 一键安装脚本 |
+
 ---
 
 ## 三把尺子
@@ -33,7 +41,14 @@ cd san-chi-chu-pian
 > 网页直达：https://github.com/dashuai6-6/jianying-automation/tree/san-chi-chu-pian
 > 不在默认分支上，记得带 `-b san-chi-chu-pian`；不带就拉到剪映老技能那份。
 
-双击 **`install-skill.bat`**。它会装依赖、把技能复制到技能目录、跑一遍自检。
+**Windows**：双击 `install-skill.bat`。它会装依赖、把技能复制到技能目录、跑一遍自检。
+
+**Linux / macOS**：
+
+```bash
+bash install_skill.sh          # 装依赖 + 复制 + 自检
+bash install_skill.sh --check  # 只体检，不动任何东西
+```
 
 自检必须看到 `quality True` 和一个数字分数：
 
@@ -84,6 +99,7 @@ san-chi-chu-pian/
 │       └── models/            # BRISQUE 模型（557KB，必须随包走）
 ├── install-skill.bat
 ├── update-skill.bat
+├── install_skill.sh            # Linux / macOS 版安装
 └── README.md
 ```
 
