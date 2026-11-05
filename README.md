@@ -23,7 +23,9 @@
 
 **2. 字段名写错不报错。** `setClipSpeedCurve` 只有 `curve` 是对的，`points`/`keyframes`/`keys`/`stops` 全部被 serde 静默吞掉。
 
-**3. 只有三种报错是可信的**：`missing field`、`unknown variant`、`expected struct / an array of length N`。其余"成功"都要自己验。
+**3. 不 `project_save` 不落盘。** 磁盘上的 `concat.json` 一直是 131 字节空壳，save 之后才变 2773 字节。实时状态要看 `project_get`，别读磁盘。
+
+**4. 只有三种报错是可信的**：`missing field`、`unknown variant`、`expected struct / an array of length N`。其余"成功"都要自己验。
 
 ## 最值钱的两条
 

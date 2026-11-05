@@ -43,6 +43,19 @@ edit_apply(op="setClipSpeedCurve", clipId="c2", curve=[...])   # c2 不存在
 
 反过来，**不报错不等于生效**。要判定真生效，只有两条路：`project_get` 前后对比，或导出后 `ffprobe`。
 
+### 陷阱 4：不 `project_save` 不落盘
+
+改动只在内存里。不 save 的话磁盘上的 `concat.json` 一直是 131 字节的空壳（只有画幅和帧率）：
+
+```
+加完 clip，内存里 clips: 1        ← project_get 能看到
+磁盘 concat.json: 131 字节        ← 文件里啥都没有
+project_save 之后: 2773 字节      ← 这才真的存下来
+新进程 project_open 重开: clips 1  ← save 过的才读得回来
+```
+
+另外，即使 save 过，`concat.json` 里也只存工程结构；要**实时**看状态用 `project_get`（读内存），比读磁盘 JSON 更准、更全。
+
 ---
 
 ## 二、50 个命令全表
@@ -99,7 +112,7 @@ edit_apply(op="setClipSpeedCurve", clipId="c2", curve=[...])   # c2 不存在
 
 | 命令 | 实测 | 替代方案 |
 |---|---|---|
-| **`freezeFrame`** | 传 clipId + time 后 `project_get` **完全无变化**，clips 数量/时长一个字节都没动。0.0/1.0/3.4 三个时间点都试过，`duration`/`hold`/`length` 三种字段名也都试过 | **用 `preview_frame` 抽帧 → 存 PNG → `media_import` → `addClip`**。实测一次成功：抽出 1920×1080 的 PNG，导进来是 image 类型，铺到时间线默认 5 秒，这就是真正的定格 |
+| **`freezeFrame`** | 传 clipId + time 后 `project_get` **完全无变化**，clips 数量/时长一个字节都没动。0.0/1.0/3.4 三个时间点都试过，`duration`/`hold`/`length` 三种字段名也都试过。**还做了导出对照**：同一项目同一素材，`setClipSpeedCurve` 把 3.5s 拉成 7.000s（生效），紧接着 `freezeFrame(time=1.0, duration=2.0)` 导出仍是 **3.500s**（期望 5.5s） | **用 `preview_frame` 抽帧 → 存 PNG → `media_import` → `addClip`**。实测一次成功：抽出 1920×1080 的 PNG，导进来是 image 类型，铺到时间线默认 5 秒，这就是真正的定格 |
 | `setClipEnhanced` | `on: true` 通过，项目无任何变化 | 用 `effect_layer_add(effectId="concat.adjust")` + `setEffectKey` 调参数 |
 | `addMedia` | `item` 形式被接受但素材箱没变，已有 mediaId 也没变 | 直接用 `media_import`（这是高层工具，实测可靠） |
 
