@@ -56,6 +56,16 @@ project_save 之后: 2773 字节      ← 这才真的存下来
 
 另外，即使 save 过，`concat.json` 里也只存工程结构；要**实时**看状态用 `project_get`（读内存），比读磁盘 JSON 更准、更全。
 
+### 陷阱 5：项目目录必须在 `$HOME` 里
+
+```python
+project_create(location="/tmp/x")        # ❌ 拒绝
+# /tmp/x is outside where this API writes (/root)
+project_create(location="/root/x")       # ✅
+```
+
+实测 `/tmp`、`/var/tmp`、`/workspace` 全部被拒，只有家目录内可以。导出路径同理。做批量任务时工作目录建在 `$HOME` 下，别图方便用 `/tmp`。
+
 ---
 
 ## 二、50 个命令全表

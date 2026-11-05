@@ -23,9 +23,7 @@
 
 **2. 字段名写错不报错。** `setClipSpeedCurve` 只有 `curve` 是对的，`points`/`keyframes`/`keys`/`stops` 全部被 serde 静默吞掉。
 
-**3. 不 `project_save` 不落盘。** 磁盘上的 `concat.json` 一直是 131 字节空壳，save 之后才变 2773 字节。实时状态要看 `project_get`，别读磁盘。
-
-**4. 只有三种报错是可信的**：`missing field`、`unknown variant`、`expected struct / an array of length N`。其余"成功"都要自己验。
+**3. 只有三种报错是可信的**：`missing field`、`unknown variant`、`expected struct / an array of length N`。其余"成功"都要自己验。
 
 ## 最值钱的两条
 
@@ -50,6 +48,36 @@ clip_add(path=P, mediaId=mid, trackId=T, start=4.0)        # 默认停 5 秒
 ```
 
 `freezeFrame` 传 clipId + time 后项目一个字节都没变，三个时间点、四种时长字段名全试过。
+
+## 装
+
+**Linux（x86_64 / aarch64）**
+
+```bash
+bash scripts/install_concat.sh
+```
+
+一条命令做完四件事：下载官方 deb（147MB）→ 校验 SHA256 → 装依赖 → 冒烟测试（建项目、导出 1 秒、`ffprobe` 对时长）。
+
+先不动系统、只看环境行不行：
+
+```bash
+bash scripts/install_concat.sh --check
+```
+
+国内下载慢（实测能到 14KB/s）就换镜像：
+
+```bash
+CONCAT_MIRROR=https://ghfast.top/ bash scripts/install_concat.sh
+```
+
+**Windows / macOS**
+
+同一 release 页有现成的 `.exe` / `.msi` / `.dmg`，直接装：
+
+https://github.com/jub0t/Concat/releases/latest
+
+但下面的 MCP headless 通篇只在 **Linux** 上验证过，Windows 版能不能 `concat --mcp headless` 没测。
 
 ## 用法
 
