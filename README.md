@@ -26,9 +26,12 @@
 ## 装
 
 ```bash
-git clone https://github.com/dashuai6-6/san-chi-chu-pian.git
+git clone -b san-chi-chu-pian https://github.com/dashuai6-6/jianying-automation.git san-chi-chu-pian
 cd san-chi-chu-pian
 ```
+
+> 网页直达：https://github.com/dashuai6-6/jianying-automation/tree/san-chi-chu-pian
+> 不在默认分支上，记得带 `-b san-chi-chu-pian`；不带就拉到剪映老技能那份。
 
 双击 **`install-skill.bat`**。它会装依赖、把技能复制到技能目录、跑一遍自检。
 
